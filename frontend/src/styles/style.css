@@ -1,0 +1,627 @@
+html {
+  box-sizing: border-box;
+}
+
+body {
+
+}
+
+/* чтоб box-sizing: border-box не влиял на подключаемые свойства */
+*,
+::after,
+::before{
+  box-sizing: inherit;
+}
+
+/* для адаптивных картинок, чтоб картинка не вылезала за блок */
+img {
+  max-width: 100%;
+}
+
+/* чтоб избавиться от синего цвета и убрать ненужную обводку */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  padding: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+@font-face {
+  font-family: 'Ubuntu';
+  src: local(''),
+    url('../fonts/Ubuntu/Ubuntu-Bold.woff2') format('woff2'),
+    url('../fonts/Ubuntu/Ubuntu-Bold.woff') format('woff');
+  font-display: swap;
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Ubuntu';
+  src: local(''),
+    url('../fonts/Ubuntu/Ubuntu-Light.woff2') format('woff2'),
+    url('../fonts/Ubuntu/Ubuntu-Light.woff') format('woff');
+  font-display: swap;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Ubuntu';
+  src: local(''),
+    url('../fonts/Ubuntu/Ubuntu-Medium.woff2') format('woff2'),
+    url('../fonts/Ubuntu/Ubuntu-Medium.woff') format('woff');
+  font-display: swap;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Ubuntu';
+  src: local(''),
+    url('../fonts/Ubuntu/Ubuntu-Regular.woff2') format('woff2'),
+    url('../fonts/Ubuntu/Ubuntu-Regular.woff') format('woff');
+  font-display: swap;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: local(''),
+    url('../fonts/WorkSans/work-sans-bold.woff2') format('woff2'),
+    url('../fonts/WorkSans/work-sans-bold.woff') format('woff');
+    /* url('../fonts/WorkSans/WorkSans-Bold.woff2') format('woff2'); */
+  font-display: swap;
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: local(''),
+    url('../fonts/WorkSans/work-sans-light.woff2') format('woff2'),
+    url('../fonts/WorkSans/work-sans-light.woff') format('woff');
+    /* url('../fonts/WorkSans/WorkSans-Light.woff2') format('woff2'); */
+  font-display: swap;
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: local(''),
+    url('../fonts/WorkSans/work-sans-medium.woff2') format('woff2'),
+    url('../fonts/WorkSans/work-sans-medium.woff') format('woff');
+    /* url('../fonts/WorkSans/WorkSans-Medium.woff2') format('woff2'); */
+  font-display: swap;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  src: local(''),
+    url('../fonts/WorkSans/work-sans.woff2') format('woff2'),
+    url('../fonts/WorkSans/work-sans.woff') format('woff');
+    /* url('../fonts/WorkSans/WorkSans-Regular.woff2') format('woff2'); */
+  font-display: swap;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: local(''),
+    url('../fonts/Roboto/Roboto-Medium.woff2') format('woff2'),
+    url('../fonts/Roboto/Roboto-Medium.woff') format('woff');
+  font-display: swap;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: local(''),
+    url('../fonts/Roboto/Roboto-Regular.woff2') format('woff2'),
+    url('../fonts/Roboto/Roboto-Regular.woff') format('woff');
+  font-display: swap;
+  font-weight: normal;
+}
+
+/* body {
+  font-family: 'Open Sans', sans-serif;
+} */
+
+:root {
+  --color-primary: #116ACC;
+  --color-secondary-1: #182233;
+  --color-secondary-2: #B3CEE2;
+  --color-secondary-3: #D9DDE7;
+  --color-secondary-red: #FD4E5D;
+  --color-secondary-green: #76CA66;
+  --color-info: #2F80ED;
+  --color-success: #27AE60;
+  --color-warning: #E2B93B;
+  --color-error: #BA0000;
+  --color-black: #000;
+  --color-gray-7: #F3F4F6;
+}
+
+:root {
+  --family-ubuntu: Ubuntu, sans-serif;
+  --family-roboto: Roboto, sans-serif;
+  --family-workSans: Work Sans, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+  margin: 0;
+  padding: 0;
+  font-family: var(--family-workSans);
+  font-size: 48px;
+  font-weight: 300;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--family-workSans);
+  font-size: 34px;
+  font-weight: bold;
+  line-height: 40px;
+  font-style: normal;
+}
+
+.positive {
+  color: var(--color-secondary-green);
+}
+
+.negative {
+  color: var(--color-secondary-red);
+}
+
+.none {
+  display: none;
+}
+
+.border-window {
+  border-radius: 50px;
+}
+
+.container {
+  margin: 0 50px;
+  padding: 0 50px;
+  width: 1440px;
+}
+
+.box-shadow {
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn {
+  border-radius: 6px;
+  color: #fff;
+  background-color: var(--color-primary);
+  font-size: 16px;
+  font-family: var(--family-ubuntu);
+  font-weight: 500;
+}
+
+.header {
+  margin-top: 15px;
+  height: 100px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  background-color: var(--color-primary);
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.25);
+}
+
+.header-logo {
+  width: 50%;
+  color: #fff;
+}
+
+.hedder-btn {
+  padding: 15px 22px;
+  border: var(--color-primary) 2px solid;
+  background-color: #fff;
+  color: var(--color-primary);
+}
+
+.hedder-btn:not(:last-child) {
+  margin-right: 24px;
+}
+
+.open {
+  background-color: #A0C3FF;
+}
+
+.main {
+  min-height: 924px;
+  padding-bottom: 30px;
+}
+
+.main-container {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ENTER */
+.window-enter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.window-enter__enter {
+  display: flex;
+  flex-direction: column;
+  margin-top: 262px;
+  width: 500px;
+  height: 366px;
+  background-color: var(--color-gray-7);
+}
+
+.enter-title {
+  margin-top: 50px;
+  margin-left: 115px;
+  word-spacing: 4px;
+}
+
+.enter-form {
+  margin-top: 35px;
+}
+
+.form-input__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-block {
+  align-self: end;
+}
+
+.input-block-enter {
+  align-self: end;
+  margin-right: 85px;
+}
+.block-password {
+  margin-top: 25px;
+}
+
+.input {
+  padding: 9px 16px;
+  width: 300px;
+  border: 1px solid #9CA3AF;
+  border-radius: 7px;
+  font-family: var(--family-ubuntu);
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* .input-enter {
+} */
+
+.label {
+  margin-right: 17px;
+  font-family: Ubuntu;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+}
+
+.password-enter {
+  align-self: end;
+  margin-top: 25px;
+  margin-right: 85px;
+  height: 44px;
+}
+
+.btn-enter {
+  margin-top: 30px;
+  margin-left: 115px;
+  padding: 17px 22px;
+  font-size: 14px;
+}
+
+/* ACCOUNT */
+.accounts-top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.accounts-top__left {
+  display: flex;
+  align-content: center;
+  margin-top: 53px;
+}
+
+.accounts-title {
+  margin-right: 45px;
+}
+
+.celect-accounts {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 12px;
+  border-color: var(--color-primary);
+}
+
+.accounts-top__right {
+  margin-top: 45px;
+}
+
+.btn-icons {
+  display: flex;
+  align-items: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 25px;
+  font-size: 16px;
+}
+
+.btn-icon {
+  margin-left: 20px;
+  margin-right: 10px;
+  transform: translateY(2px);
+}
+
+/* ACCOUNTS cards*/
+.accounts-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 50px;
+}
+
+.account-card {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+  padding: 22px;
+  width: 400px;
+  height: 156px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.25);
+  border-radius: 9px;
+}
+
+.account-card:not(:nth-child(3n)) {
+  margin-right: 70px;
+}
+
+.account-card__left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.account-number-card {
+  font-family: var(--family-roboto);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.account-number-balance {
+  display: flex;
+  margin-top: 9px;
+  font-family: var(--family-ubuntu);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.balance {
+  margin-right: 4px;
+}
+.account-number-transaction__text {
+  font-family: var(--family-workSans);
+  font-style: normal;
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 15px;
+}
+
+.account-number-transaction__date {
+  font-family: var(--family-workSans);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 15px;
+}
+
+.account-card__right {
+  position: relative;
+}
+
+.account-card-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 17px 21px;
+}
+
+/* viewing-account */
+.viewing-account-top {
+  font-family: var(--family-workSans);
+  font-style: normal;
+  font-weight: normal;
+}
+
+.viewing-account-top__left {
+  margin-top: 25px;
+}
+
+.viewing-account-number {
+  font-size: 34px;
+  line-height: 40px;
+}
+
+.viewing-account-top__right {
+  margin-top: 33px;
+  font-size: 20px;
+  line-height: 23px;
+}
+
+.balance-text {
+  margin-right: 50px;
+  font-weight: bold;
+}
+
+.margin-top-window {
+  margin-top: 50px;
+}
+
+.viewing-account-window {
+  padding: 25px 50px;
+}
+
+.viewing-account-window_top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.window-form__new-transition {
+  max-width: 606px;
+  margin-right: 50px;
+  background: #F3F4F6;
+}
+
+.window-title {
+  margin: 0;
+  padding: 0;
+  font-family: var(--family-workSans);
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 23px;
+}
+
+.block-number-recipient {
+  margin-top: 23px;
+}
+
+.block-summ {
+  margin-top: 24px;
+}
+
+.btn-mail {
+  margin-top: 25px;
+  margin-left: 206px;
+}
+
+.window-form__balance-dinamic {
+  width: 684px;
+}
+
+.window-form__history-transition {
+  margin-top: 50px;
+  width: 100%;
+  background: #F3F4F6;
+
+}
+
+.table {
+  margin-top: 25px;
+  margin-bottom: 40px;
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--family-ubuntu);
+}
+
+.table-header {
+  color: white;
+  background-color: var(--color-primary);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.table-body {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+tbody tr {
+  border-bottom: 2px solid rgba(0, 82, 255, 0.1);
+}
+
+th:first-child {
+  border-radius: 15px 0 0 15px;
+}
+
+th:last-child {
+  border-radius: 0 15px 15px 0;
+}
+
+th, td {
+  padding: 20px 0;
+  text-align: start;
+}
+
+td {
+  padding: 26px 0;
+}
+
+th:first-child {
+  padding-left: 50px;
+}
+
+td:first-child {
+  padding-left: 50px;
+}
+
+.history-balanse-window {
+  width: 100%;
+  padding: 25px 98px;
+}
+
+/* currecy-conversions */
+.currecy-conversions-window__container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 53px;
+}
+
+.currecy-conversions-window__left {
+  display: flex;
+  flex-direction: column;
+  margin-right: 50px;
+  width: 90%;
+}
+
+.currecy-conversions-window__left-bottom {
+  margin-top: 44px;
+}
+
+.currecy-conversions-window__right {
+  background-color: #E5E5E5;
+}
+
+.currecy-conversions-window {
+  padding: 50px;
+  width: 100%;
+}
+
+
+.atms-map-window__container {
+  width: 100%;
+  height: 728px;
+  background-color: palegoldenrod;
+}
