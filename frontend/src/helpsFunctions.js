@@ -34,7 +34,7 @@ function formatSumm(str) {
 
 function formatSummColor(str) {
   if (str.includes('-')) {
-    return `- ${str}`;
+    return `${str}`;
   } else {
     return `+ ${str}`;
   }
@@ -102,4 +102,16 @@ function dateTransformForTable(date) {
   return day;
 }
 
-export { formatSumm, dateTransform, dateTransformForTable, formatSummColor };
+function definSign(transaction, account) {
+  if (transaction.from === account) {
+    return `- ${transaction.amount}`;
+  } else return transaction.amount;
+}
+
+export {
+  formatSumm,
+  dateTransform,
+  dateTransformForTable,
+  formatSummColor,
+  definSign,
+};

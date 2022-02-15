@@ -33,7 +33,7 @@ function mainViewingAccount(account, balance) {
         { class: 'viewing-account-top__left' },
         el('p', { class: 'viewing-account-number' }, `№ ${account}`)
       ),
-      el('div', { class: 'viewing-account-top__right' }, [
+      el('div', { class: 'viewing-account-top__right balance-amount' }, [
         el('span', { class: 'balance-text' }, 'Баланс'),
         balance,
       ]),
@@ -51,7 +51,7 @@ function mainViewingAccount(account, balance) {
             el(
               'form',
               {
-                name: 'new-transition',
+                name: 'newTransitionForm',
                 class: 'new-transition-form form ',
                 id: 'newTransitionForm',
               },
@@ -60,16 +60,19 @@ function mainViewingAccount(account, balance) {
                   el('div', { class: 'input-block block-number-recipient' }, [
                     el('label', { class: 'label' }, 'Номер счёта получателя'),
                     el('input', {
-                      class: 'input-enter input-login input',
-                      id: 'input-login',
+                      type: 'number',
+                      class: 'input-account-to input',
+                      id: 'inputAccountTo',
+                      minlength: '16',
                       placeholder: 'Placeholder',
                     }),
                   ]),
                   el('div', { class: 'input-block block-summ' }, [
                     el('label', { class: 'label' }, 'Сумма перевода'),
                     el('input', {
-                      class: 'input-enter input-password input',
-                      id: 'input-password',
+                      type: 'number',
+                      class: 'input-amount input',
+                      id: 'inputAmount',
                       placeholder: 'Placeholder',
                     }),
                   ]),
@@ -87,6 +90,7 @@ function mainViewingAccount(account, balance) {
           {
             class:
               'viewing-account-window window-form__balance-dinamic border-window box-shadow',
+            id: 'balance-dinamic',
           },
           [
             el('h2', { class: 'window-title' }, 'Динамика баланса'),

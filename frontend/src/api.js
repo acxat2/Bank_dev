@@ -11,7 +11,7 @@ function getToken(url, AUTH_DATA) {
     .then((result) => result.payload.token);
 }
 
-function getDataAccounts(url, TOKEN) {
+function getData(url, TOKEN) {
   const request = fetch(url, {
     headers: {
       Authorization: `Basic ${TOKEN}`,
@@ -20,7 +20,7 @@ function getDataAccounts(url, TOKEN) {
   });
   return request
     .then((responce) => responce.json())
-    .then((result) => result.payload[0]);
+    .then((result) => result.payload);
 }
 
 function createAccountApi(url, TOKEN) {
@@ -36,16 +36,28 @@ function createAccountApi(url, TOKEN) {
     .then((result) => result.payload);
 }
 
-function getDataAccount(url, TOKEN) {
+// function getData(url, TOKEN) {
+//   const request = fetch(url, {
+//     headers: {
+//       Authorization: `Basic ${TOKEN}`,
+//       'Content-Type': 'application/json;charset=utf-8',
+//     },
+//   });
+//   return request
+//     .then((responce) => responce.json())
+//     .then((result) => result.payload);
+// }
+
+function transferFunds(url, TOKEN, data) {
   const request = fetch(url, {
+    method: 'POST',
     headers: {
       Authorization: `Basic ${TOKEN}`,
       'Content-Type': 'application/json;charset=utf-8',
     },
+    body: JSON.stringify(data),
   });
-  return request
-    .then((responce) => responce.json())
-    .then((result) => result.payload);
+  return request.then((responce) => responce.json());
 }
 
-export { getToken, getDataAccounts, createAccountApi, getDataAccount };
+export { getToken, getData, createAccountApi, transferFunds };

@@ -6,7 +6,7 @@ const arrow = el('span', {
 arrow.innerHTML =
   '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.83 11L11.41 7.41L10 6L4 12L10 18L11.41 16.59L7.83 13H20V11H7.83Z" fill="white"/></svg>';
 
-function mainHistoryBalance() {
+function mainHistoryBalance(account, balance) {
   const mainHistoryBalance = el('div', { class: 'viewing-accounts' }, [
     el('section', { class: 'accounts-top container' }, [
       el(
@@ -25,11 +25,11 @@ function mainHistoryBalance() {
       el(
         'div',
         { class: 'viewing-account-top__left' },
-        el('p', { class: 'viewing-account-number' }, `№ 12455242373623463`)
+        el('p', { class: 'viewing-account-number' }, `№ ${account}`)
       ),
-      el('div', { class: 'viewing-account-top__right' }, [
+      el('div', { class: 'viewing-account-top__right balance-amount' }, [
         el('span', { class: 'balance-text' }, 'Баланс'),
-        '31 235',
+        balance,
       ]),
     ]),
     el('section', { class: 'margin-top-window container' }, [
@@ -74,7 +74,7 @@ function mainHistoryBalance() {
                 el('th', { class: 'colDate' }, 'Дата'),
               ]),
             ]),
-            el('tbody', { class: 'table-body' })
+            el('tbody', { class: 'table-body', id: 'transactionTable' })
           ),
         ]
       ),
