@@ -39,7 +39,18 @@ function mainHistoryBalance(account, balance) {
           class:
             'history-balanse-window margin-top-window border-window box-shadow',
         },
-        [el('h2', { class: 'window-title' }, 'Динамика баланса')]
+        [
+          el('h2', { class: 'window-title' }, 'Динамика баланса'),
+          el(
+            'div',
+            { class: 'chart-container' }
+            // el('canvas', {
+            //   class: 'myChart',
+            //   id: 'dinamicHistory',
+            //   height: '195px',
+            // })
+          ),
+        ]
       ),
       el(
         'div',
@@ -52,6 +63,15 @@ function mainHistoryBalance(account, balance) {
             'h2',
             { class: 'window-title' },
             'Соотношение входящих исходящих транзакций'
+          ),
+          el(
+            'div',
+            { class: 'chart-container' },
+            el('canvas', {
+              class: 'myChart',
+              id: 'diferentHistory',
+              height: '195px',
+            })
           ),
         ]
       ),

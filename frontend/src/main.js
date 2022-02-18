@@ -12,7 +12,7 @@ import {
   createYourCurrencyItem,
   createSelectCurrencyOption,
 } from './сurrency-conversions';
-import { mainAtmcMap } from './atmc-map';
+import { mainAtmcMap, yandexMap } from './atmc-map';
 import { getToken, getData, createAccountApi, transferFunds } from './api';
 import {
   formatSumm,
@@ -21,13 +21,21 @@ import {
   formatSummColor,
   definSign,
 } from './helpsFunctions';
+
+import {
+  createScriptMyChart,
+  script,
+  innerHTMLMyChartViewing,
+  innerHTMLDinamicHistory,
+  myChart,
+} from './charts';
 import normalize from './styles/normalize.css';
 import style from './styles/style.css';
 
-const body = window.document.body;
+const head = document.head;
+head.append(script);
 
-// setChildren(body, header, main);
-// main.append(mainAtmcMap());
+const body = window.document.body;
 
 setChildren(body, header, main);
 const atms = document.getElementById('atms');
@@ -67,7 +75,7 @@ function enter() {
         });
 
         atms.addEventListener('click', () => {
-          renderAtmcMap(main, nav, accounts, atms, currency);
+          renderAtmcMap(TOKEN, main, nav, accounts, atms, currency);
         });
 
         exit.addEventListener('click', () => enter());
@@ -205,6 +213,19 @@ function renderViewingAccount(
         mainViewingAccount(result.account, formatSumm(result.balance))
       );
 
+      // myChart();
+      const canvas = `${document.getElementById('myChart')}`;
+
+      function createScript() {
+        const dat = '[65, 59, 80, 30, 56, 55, 40]';
+        const arr = `['January', 'February', 'March', 'April', 'May', 'June']`;
+
+        const scriptMyChart = createScriptMyChart();
+        scriptMyChart.innerHTML = innerHTMLMyChartViewing(arr, dat);
+        // if (body.querySelector)
+        body.append(scriptMyChart);
+      }
+      createScript();
       const balanceAmount = document.querySelector('.balance-amount');
 
       const balanceDinamic = document.getElementById('balance-dinamic');
@@ -336,6 +357,18 @@ function renderHistoryBalance(
   atms,
   currency
 ) {
+  body.querySelector('script').remove();
+  const Chart = myChart();
+  // const arr = `['January', 'February', 'March', 'April', 'May', 'June']`;
+  const canvas = document.createElement('canvas');
+  canvas.setAttribute('id', 'dinamicHistory');
+  canvas.setAttribute('height', '195px');
+  canvas.setAttribute('class', 'myChart');
+  canvas.append(Chart);
+
+  //  очищаю скрипт, и так понимаю, идентификаторы уже объявлены
+  // body.querySelector('script').innerHTML = `${innerHTMLDinamicHistory(arr)}`;
+
   reloadWindow(main, nav, accounts, atms, currency);
   main.append(mainHistoryBalance(result.account, formatSumm(result.balance)));
   const transactionTable = document.getElementById('transactionTable');
@@ -355,7 +388,6 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
   const currencyOnlineList = main.querySelector('.currency-online-list');
   const currencyList = main.querySelector('.your-currency-list');
 
-  const changeForm = document.getElementById('currencyChangeForm');
   const changeFrom = document.getElementById('selectCurrencyFrom');
   const changeTo = document.getElementById('selectCurrencyTo');
   const changeAmount = document.getElementById('inputCurrencyAmount');
@@ -368,7 +400,7 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
   });
 
   getData(`http://localhost:3000/currencies`, TOKEN).then((result) => {
-    console.log(result);
+    // console.log(result);
     // console.log(Object.keys(result));
     // console.log(Object.values(result));
 
@@ -434,10 +466,14 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
   };
 }
 
-function renderAtmcMap(main, nav, accounts, atms, currency) {
+function renderAtmcMap(TOKEN, main, nav, accounts, atms, currency) {
   reloadWindow(main, nav, accounts, atms, currency);
   atms.classList.add('open');
   main.append(mainAtmcMap());
+  getData(`http://localhost:3000/banks`, TOKEN).then((result) => {
+    console.log(result);
+    yandexMap();
+  });
 }
 
 // .replace(/:/g, ',').split(',')

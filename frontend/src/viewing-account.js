@@ -94,7 +94,16 @@ function mainViewingAccount(account, balance) {
           },
           [
             el('h2', { class: 'window-title' }, 'Динамика баланса'),
-
+            el(
+              'div',
+              { class: 'chart-container' },
+              //   el('div',
+              el('canvas', {
+                class: 'myChart',
+                id: 'dinamicViewing',
+                height: '195px',
+              })
+            ),
             // ),
           ]
         ),

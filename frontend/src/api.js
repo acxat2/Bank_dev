@@ -36,18 +36,6 @@ function createAccountApi(url, TOKEN) {
     .then((result) => result.payload);
 }
 
-// function getData(url, TOKEN) {
-//   const request = fetch(url, {
-//     headers: {
-//       Authorization: `Basic ${TOKEN}`,
-//       'Content-Type': 'application/json;charset=utf-8',
-//     },
-//   });
-//   return request
-//     .then((responce) => responce.json())
-//     .then((result) => result.payload);
-// }
-
 function transferFunds(url, TOKEN, data) {
   const request = fetch(url, {
     method: 'POST',
