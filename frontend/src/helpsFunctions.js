@@ -18,7 +18,7 @@ function formatSumm(str) {
     let summ = wholeRev
       .reverse()
       .join('')
-      .replace(/(_)/g, ' ')
+      .replace(/(_)/g, ` `)
       .concat('.', siparate[1])
       .replace(/\- /, '-');
     return `${summ} ₽`;
@@ -26,9 +26,43 @@ function formatSumm(str) {
     let summ = wholeRev
       .reverse()
       .join('')
-      .replace(/(_)/g, ' ')
+      .replace(/(_)/g, ` `)
       .replace(/\- /, '-');
     return `${summ} ₽`;
+  }
+}
+
+function formatAmouth(str) {
+  str = String(str);
+  const siparate = str.split('.');
+  let wholeRev = [];
+  let j = 1;
+
+  for (let i = siparate[0].length; i > 0; i--) {
+    if (j <= 3) {
+      ++j;
+      wholeRev.push(siparate[0][i - 1]);
+    } else {
+      j = 2;
+      wholeRev.push('_');
+      wholeRev.push(siparate[0][i - 1]);
+    }
+  }
+  if (siparate[1]) {
+    let summ = wholeRev
+      .reverse()
+      .join('')
+      .replace(/(_)/g, `&nbsp;`)
+      .concat('.', siparate[1])
+      .replace(/\- /, '-');
+    return summ;
+  } else {
+    let summ = wholeRev
+      .reverse()
+      .join('')
+      .replace(/(_)/g, `&nbsp;`)
+      .replace(/\- /, '-');
+    return summ;
   }
 }
 
@@ -114,4 +148,5 @@ export {
   dateTransformForTable,
   formatSummColor,
   definSign,
+  formatAmouth,
 };

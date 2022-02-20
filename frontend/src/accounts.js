@@ -55,16 +55,15 @@ function mainAccounts() {
 }
 
 function accountCard(account, balance, date) {
-  // balance = balance
+  const balanceElement = el('div', { class: 'balance' });
+  balanceElement.innerHTML = balance;
   const elem = el(
     'div',
     { class: 'account-card card' },
     el('div', { class: 'account-card__left' }, [
       el('div', { class: 'account-card__left-top' }, [
         el('div', { class: 'account-number-card' }, account),
-        el('div', { class: 'account-number-balance' }, [
-          el('div', { class: 'balance' }, balance),
-        ]),
+        el('div', { class: 'account-number-balance' }, [balanceElement]),
       ]),
       el('div', { class: 'account-number-transaction' }, [
         el(

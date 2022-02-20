@@ -149,6 +149,8 @@ function createVectorRed() {
 }
 
 function createYourCurrencyItem(code, amount) {
+  const span = el('span', { class: 'td_price' });
+  span.innerHTML = amount;
   const createYourCurrencyItem = el('div', { class: 'currency-online-tr' }, [
     el('span', { class: 'td_currency' }, `${code}`),
     el(
@@ -156,7 +158,7 @@ function createYourCurrencyItem(code, amount) {
       { class: 'td_dashed' },
       el('div', { class: `div_dashed-line` }, '')
     ),
-    el('span', { class: 'td_price' }, `${amount}`),
+    span,
   ]);
   return createYourCurrencyItem;
 }

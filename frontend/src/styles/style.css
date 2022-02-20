@@ -718,6 +718,7 @@ td:first-child {
 
 .td_price {
   padding-left: 10px;
+  width: min-content;
   font-family: var(--family-workSans);
   font-style: normal;
   font-weight: normal;

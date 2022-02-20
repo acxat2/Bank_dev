@@ -20,6 +20,7 @@ import {
   dateTransformForTable,
   formatSummColor,
   definSign,
+  formatAmouth,
 } from './helpsFunctions';
 
 import {
@@ -32,8 +33,8 @@ import {
 import normalize from './styles/normalize.css';
 import style from './styles/style.css';
 
-const head = document.head;
-head.append(script);
+// const head = document.head;
+// head.append(script);
 
 const body = window.document.body;
 
@@ -213,19 +214,19 @@ function renderViewingAccount(
         mainViewingAccount(result.account, formatSumm(result.balance))
       );
 
-      // myChart();
-      const canvas = `${document.getElementById('myChart')}`;
+      // myChart('dinamicViewing');
+      // const canvas = `${document.getElementById('myChart')}`;
 
-      function createScript() {
-        const dat = '[65, 59, 80, 30, 56, 55, 40]';
-        const arr = `['January', 'February', 'March', 'April', 'May', 'June']`;
+      // function createScript() {
+      //   const dat = '[65, 59, 80, 30, 56, 55, 40]';
+      //   const arr = `['January', 'February', 'March', 'April', 'May', 'June']`;
 
-        const scriptMyChart = createScriptMyChart();
-        scriptMyChart.innerHTML = innerHTMLMyChartViewing(arr, dat);
-        // if (body.querySelector)
-        body.append(scriptMyChart);
-      }
-      createScript();
+      //   const scriptMyChart = createScriptMyChart();
+      //   scriptMyChart.innerHTML = innerHTMLMyChartViewing(arr, dat);
+      //   // if (body.querySelector)
+      //   body.append(scriptMyChart);
+      // }
+      // createScript();
       const balanceAmount = document.querySelector('.balance-amount');
 
       const balanceDinamic = document.getElementById('balance-dinamic');
@@ -271,7 +272,6 @@ function renderViewingAccount(
         e.preventDefault();
         const amount = newTransitionForm[1].value;
         const to = newTransitionForm[0].value;
-        console.log(amount, to);
         newTransitionForm[0].classList.remove('error');
         newTransitionForm[1].classList.remove('error');
 
@@ -357,14 +357,15 @@ function renderHistoryBalance(
   atms,
   currency
 ) {
-  body.querySelector('script').remove();
-  const Chart = myChart();
+  // body.querySelector('script').remove();
+
+  myChart('diferentHistory');
   // const arr = `['January', 'February', 'March', 'April', 'May', 'June']`;
-  const canvas = document.createElement('canvas');
-  canvas.setAttribute('id', 'dinamicHistory');
-  canvas.setAttribute('height', '195px');
-  canvas.setAttribute('class', 'myChart');
-  canvas.append(Chart);
+  // const canvas = document.createElement('canvas');
+  // canvas.setAttribute('id', 'dinamicHistory');
+  // canvas.setAttribute('height', '195px');
+  // canvas.setAttribute('class', 'myChart');
+  // canvas.append(Chart);
 
   //  очищаю скрипт, и так понимаю, идентификаторы уже объявлены
   // body.querySelector('script').innerHTML = `${innerHTMLDinamicHistory(arr)}`;
@@ -391,12 +392,59 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
   const changeFrom = document.getElementById('selectCurrencyFrom');
   const changeTo = document.getElementById('selectCurrencyTo');
   const changeAmount = document.getElementById('inputCurrencyAmount');
+  const form = document.getElementById('currencyChangeForm');
+  const btnChange = form.querySelector('button');
 
   getData(`http://localhost:3000/all-currencies`, TOKEN).then((result) => {
     for (let value of result) {
       changeFrom.append(createSelectCurrencyOption(value));
       changeTo.append(createSelectCurrencyOption(value));
     }
+
+    btnChange.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const from = changeFrom.value;
+      const to = changeTo.value;
+      const amount = changeAmount.value;
+
+      if (amount > 0) {
+        const transitilnData = {
+          from: from,
+          to: to,
+          amount: amount,
+        };
+
+        transferFunds(
+          `http://localhost:3000/currency-buy`,
+          TOKEN,
+          transitilnData
+        ).then((result) => {
+          const list = document.querySelector('.your-currency-list');
+          const trTo = list.querySelectorAll('.currency-online-tr');
+          console.log(trTo);
+          changeFrom.value = '';
+          changeTo.value = '';
+          changeAmount.value = '';
+
+          for (let tr of trTo) {
+            if (tr.firstChild.textContent === from) {
+              tr.lastChild.innerHTML = formatAmouth(
+                result.payload[from].amount
+              );
+            }
+            if (tr.firstChild.textContent === to) {
+              tr.lastChild.innerHTML = formatAmouth(result.payload[to].amount);
+            }
+            // console.log(tr.firstChild);
+          }
+          // }
+          // console.log(result);
+          // console.log(result.payload[from]);
+          // console.log(result.payload[to]);
+        });
+      }
+    });
   });
 
   getData(`http://localhost:3000/currencies`, TOKEN).then((result) => {
@@ -406,7 +454,8 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
 
     for (let item of Object.values(result)) {
       const code = item.code;
-      const amount = item.amount;
+      // const amount = item.amount;
+      const amount = formatAmouth(item.amount);
       currencyList.append(createYourCurrencyItem(code, amount));
     }
   });
@@ -471,9 +520,6 @@ function renderAtmcMap(TOKEN, main, nav, accounts, atms, currency) {
   atms.classList.add('open');
   main.append(mainAtmcMap());
   getData(`http://localhost:3000/banks`, TOKEN).then((result) => {
-    console.log(result);
-    yandexMap();
+    yandexMap(result);
   });
 }
-
-// .replace(/:/g, ',').split(',')

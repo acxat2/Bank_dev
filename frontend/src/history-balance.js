@@ -43,12 +43,12 @@ function mainHistoryBalance(account, balance) {
           el('h2', { class: 'window-title' }, 'Динамика баланса'),
           el(
             'div',
-            { class: 'chart-container' }
-            // el('canvas', {
-            //   class: 'myChart',
-            //   id: 'dinamicHistory',
-            //   height: '195px',
-            // })
+            { class: 'chart-container' },
+            el('canvas', {
+              class: 'myChart',
+              id: 'dinamicHistory',
+              // height: '195px',
+            })
           ),
         ]
       ),
@@ -70,7 +70,8 @@ function mainHistoryBalance(account, balance) {
             el('canvas', {
               class: 'myChart',
               id: 'diferentHistory',
-              height: '195px',
+              // width: '100%',
+              // height: '195px',
             })
           ),
         ]
