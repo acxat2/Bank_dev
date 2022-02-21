@@ -26,7 +26,7 @@ function mainAtmcMap() {
 }
 
 function yandexMap(arrGeo) {
-  console.log('skld;g');
+  console.log('spinner');
   ymaps
     .load()
     .then((maps) => {

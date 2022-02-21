@@ -32,6 +32,7 @@ import {
 } from './charts';
 import normalize from './styles/normalize.css';
 import style from './styles/style.css';
+import { doc } from 'prettier';
 
 // const head = document.head;
 // head.append(script);
