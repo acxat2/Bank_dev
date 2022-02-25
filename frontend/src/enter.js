@@ -15,6 +15,7 @@ function mainEnter() {
             el('label', { class: 'label label-enter' }, 'Логин'),
             el('input', {
               class: 'input-enter input-login input',
+              manLength: '6',
               id: 'input-login',
               placeholder: 'Логин',
               value: 'developer',
@@ -24,6 +25,7 @@ function mainEnter() {
             el('label', { class: 'label label-enter' }, 'Пароль'),
             el('input', {
               class: 'input-enter input-password input',
+              manLength: '6',
               id: 'input-password',
               placeholder: 'Пароль',
               value: 'skillbox',

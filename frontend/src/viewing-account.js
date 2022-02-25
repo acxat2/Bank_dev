@@ -97,7 +97,6 @@ function mainViewingAccount(account, balance) {
             el(
               'div',
               { class: 'chart-container' },
-              //   el('div',
               el('canvas', {
                 class: 'myChart',
                 id: 'dinamicViewing',

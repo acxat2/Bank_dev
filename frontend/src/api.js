@@ -6,9 +6,13 @@ function getToken(url, AUTH_DATA) {
     },
     body: JSON.stringify(AUTH_DATA),
   });
-  return request
-    .then((responce) => responce.json())
-    .then((result) => result.payload.token);
+
+  // request
+  //   .then((responce) => responce.json())
+  //   .then((result) => {
+  //     return result;
+  //   });
+  return request.then((responce) => responce.json()).then((result) => result);
 }
 
 function getData(url, TOKEN) {

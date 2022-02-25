@@ -142,6 +142,14 @@ function definSign(transaction, account) {
   } else return transaction.amount;
 }
 
+function arrSumm(arr) {
+  let summ = 0;
+  for (let magor of arr) {
+    summ = summ + magor;
+  }
+  return summ;
+}
+
 export {
   formatSumm,
   dateTransform,
@@ -149,4 +157,5 @@ export {
   formatSummColor,
   definSign,
   formatAmouth,
+  arrSumm,
 };
