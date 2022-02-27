@@ -379,7 +379,7 @@ function renderViewingAccount(
         if (!newTransitionForm.querySelector('.error')) {
           const transitilnData = {
             from: result.account,
-            to: accountsStorage,
+            to: newTransitionForm[0].value,
             amount: amount,
           };
 
