@@ -353,6 +353,8 @@ function renderViewingAccount(
 
       const newTransitionForm = document.getElementById('newTransitionForm');
       const btnMail = newTransitionForm.querySelector('button');
+      if (localStorage.getItem('to'))
+        newTransitionForm[0].value = localStorage.getItem('to');
 
       newTransitionForm[0].addEventListener('focus', () => {
         newTransitionForm[0].classList.remove('error');
@@ -364,22 +366,22 @@ function renderViewingAccount(
 
       btnMail.addEventListener('click', (e) => {
         e.preventDefault();
-        const to = newTransitionForm[0].value;
+        let to = newTransitionForm[0].value;
         const amount = newTransitionForm[1].value;
         newTransitionForm[0].classList.remove('error');
         newTransitionForm[1].classList.remove('error');
-        let accountsStorage = [];
-
         if (to.length < 16) {
           newTransitionForm[0].classList.add('error');
         }
         if (amount <= 0) {
           newTransitionForm[1].classList.add('error');
         }
+        console.log(newTransitionForm.querySelector('.error'));
+
         if (!newTransitionForm.querySelector('.error')) {
           const transitilnData = {
             from: result.account,
-            to: newTransitionForm[0].value,
+            to: to,
             amount: amount,
           };
 
@@ -391,14 +393,14 @@ function renderViewingAccount(
             if (result.error === 'Invalid account to') {
               newTransitionForm[0].classList.add('error');
               alert('Не указан счёт зачисления, или этого счёта не существует');
+            } else {
+              localStorage.setItem('to', transitilnData.to);
             }
           });
           getData(
             `http://localhost:3000/account/${result.account}`,
             TOKEN
           ).then((result) => {
-            console.log(result);
-
             const trs = transactionTable.querySelectorAll('tr');
             for (let tr of trs) {
               tr.remove();
@@ -498,12 +500,34 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
 
     btnChange.addEventListener('click', (e) => {
       e.preventDefault();
+      let from = changeFrom.value;
+      let to = changeTo.value;
+      let amount = changeAmount.value;
+      changeFrom.classList.remove('error');
+      changeTo.classList.remove('error');
+      changeAmount.classList.remove('error');
 
-      const from = changeFrom.value;
-      const to = changeTo.value;
-      const amount = changeAmount.value;
+      if (from === '') {
+        changeFrom.classList.add('error');
+      }
+      if (to === '') {
+        changeTo.classList.add('error');
+      }
+      if (amount <= 0) {
+        changeAmount.classList.add('error');
+      }
+      console.log(amount === '1');
+      console.log(amount); //
+      console.log(form.querySelector('.error'));
+      if (!form.querySelector('.error')) {
+        // Почему здесь условие не срабатывает?
+        from = '';
+        to = '';
+        amount = '';
+        changeFrom.classList.remove('error');
+        changeTo.classList.remove('error');
+        changeAmount.classList.remove('error');
 
-      if (amount > 0) {
         const transitilnData = {
           from: from,
           to: to,
@@ -517,10 +541,6 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
         ).then((result) => {
           const list = document.querySelector('.your-currency-list');
           const trTo = list.querySelectorAll('.currency-online-tr');
-          console.log(trTo);
-          changeFrom.value = '';
-          changeTo.value = '';
-          changeAmount.value = '';
 
           for (let tr of trTo) {
             if (tr.firstChild.textContent === from) {
@@ -531,12 +551,7 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
             if (tr.firstChild.textContent === to) {
               tr.lastChild.innerHTML = formatAmouth(result.payload[to].amount);
             }
-            // console.log(tr.firstChild);
           }
-          // }
-          // console.log(result);
-          // console.log(result.payload[from]);
-          // console.log(result.payload[to]);
         });
       }
     });
