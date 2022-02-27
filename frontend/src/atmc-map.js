@@ -26,7 +26,6 @@ function mainAtmcMap() {
 }
 
 function yandexMap(arrGeo) {
-  console.log('spinner');
   ymaps
     .load()
     .then((maps) => {
@@ -39,6 +38,7 @@ function yandexMap(arrGeo) {
         label = new maps.Placemark([placemark.lat, placemark.lon], {}, {});
         map.geoObjects.add(label);
       }
+      console.log('end spinner');
       return map;
     })
     .catch((error) => console.log('Failed to load Yandex Maps', error));

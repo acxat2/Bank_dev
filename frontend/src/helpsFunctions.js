@@ -150,6 +150,84 @@ function arrSumm(arr) {
   return summ;
 }
 
+function sortTransaction(result, arrMonths) {
+  let arrMagor = new Map();
+  let arrMinor = new Map();
+  let magorKey = [];
+  let magorValue = [];
+  let minorKey = [];
+  let minorValue = [];
+  let i = 0;
+  let date = arrMonths[i];
+
+  arrMagor.set(date, []);
+  arrMinor.set(date, []);
+  magorKey.push(date);
+  minorKey.push(date);
+
+  for (let transaction of result.transactions) {
+    back: if (transaction.date.slice(0, 7) >= date) {
+      if (transaction.date.slice(0, 7) === arrMonths[i + 1]) {
+        magorValue.push(arrSumm(arrMagor.get(date)));
+        minorValue.push(arrSumm(arrMinor.get(date)));
+        i++;
+        date = arrMonths[i];
+        arrMagor.set(date, []);
+        arrMinor.set(date, []);
+        magorKey.push(date);
+        minorKey.push(date);
+      } else {
+        if (transaction.date.slice(0, 7) > arrMonths[i + 1]) {
+          magorValue.push(arrSumm(arrMagor.get(date)));
+          minorValue.push(arrSumm(arrMinor.get(date)));
+          i++;
+          date = arrMonths[i];
+          arrMagor.set(date, []);
+          arrMinor.set(date, []);
+          magorKey.push(date);
+          minorKey.push(date);
+          break back;
+        }
+      }
+      if (transaction.to === result.account) {
+        arrMagor.get(date).push(transaction.amount);
+      } else arrMinor.get(date).push(transaction.amount);
+    }
+  }
+  if (date) {
+    magorValue.push(arrSumm(arrMagor.get(date)));
+    minorValue.push(arrSumm(arrMinor.get(date)));
+  }
+  return {
+    magorKey,
+    magorValue,
+    minorKey,
+    minorValue,
+  };
+}
+
+function createArrMonths(n) {
+  let arrDate = [];
+  let m12 = 12;
+  let m = n;
+  let year = new Date().getFullYear();
+  let month = new Date().getMonth() + 1;
+  for (let i = 1; i <= m; i++) {
+    if (month >= 1) {
+      if (String(month).length !== 2) {
+        arrDate.push(year + '-' + '0' + month);
+      } else arrDate.push(year + '-' + month);
+      month--;
+      if (month === 0) {
+        month = m12;
+        year = year - 1;
+      }
+    }
+  }
+
+  return arrDate.reverse();
+}
+
 export {
   formatSumm,
   dateTransform,
@@ -158,4 +236,6 @@ export {
   definSign,
   formatAmouth,
   arrSumm,
+  sortTransaction,
+  createArrMonths,
 };

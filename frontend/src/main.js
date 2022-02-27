@@ -21,7 +21,8 @@ import {
   formatSummColor,
   definSign,
   formatAmouth,
-  arrSumm,
+  sortTransaction,
+  createArrMonths,
 } from './helpsFunctions';
 
 import { isValidAuth } from './validations';
@@ -40,8 +41,6 @@ const atms = document.getElementById('atms');
 const accounts = document.getElementById('accounts');
 const currency = document.getElementById('currency');
 const exit = document.getElementById('exit');
-
-// main.append(mainViewingAccount());
 
 function enter() {
   const nav = document.querySelector('.header-nav');
@@ -71,12 +70,15 @@ function enter() {
     }
 
     if (!authForm.querySelector('.error')) {
+      console.log('spinner');
       getToken('http://localhost:3000/login', AUTH_DATA).then((result) => {
         if (result.error === 'No such user') {
+          console.log('end spinner');
           alert('Данного пользователя не существует');
         }
 
         if (result.error === 'Invalid password') {
+          console.log('end spinner');
           alert('Не правильный пароль');
         }
 
@@ -85,10 +87,13 @@ function enter() {
           renderWindowAccounts(TOKEN, main, nav, accounts, atms, currency);
 
           accounts.addEventListener('click', () => {
+            console.log('spinner');
             renderWindowAccounts(TOKEN, main, nav, accounts, atms, currency);
           });
 
           currency.addEventListener('click', () => {
+            console.log('spinner');
+            reloadWindow(main, nav, accounts, atms, currency);
             renderCurrencyConversions(
               TOKEN,
               main,
@@ -100,7 +105,9 @@ function enter() {
           });
 
           atms.addEventListener('click', () => {
-            renderAtmcMap(TOKEN, main, nav, accounts, atms, currency);
+            console.log('spinner');
+            reloadWindow(main, nav, accounts, atms, currency);
+            renderAtmcMap(TOKEN, main, atms);
           });
 
           exit.addEventListener('click', () => enter());
@@ -121,7 +128,6 @@ function renderWindowAccounts(TOKEN, main, nav, accounts, atms, currency) {
   const createAccount = document.getElementById('createAccount');
   const cardContainer = document.querySelector('.accounts-card-container');
   getData('http://localhost:3000/accounts', TOKEN).then((result) => {
-    // let sortResult;
     select.addEventListener('change', () => {
       cardContainer.innerHTML = '';
       switch (select.value) {
@@ -170,6 +176,7 @@ function renderWindowAccounts(TOKEN, main, nav, accounts, atms, currency) {
 
           break;
       }
+
       createAccountCard(
         TOKEN,
         cardContainer,
@@ -181,6 +188,7 @@ function renderWindowAccounts(TOKEN, main, nav, accounts, atms, currency) {
         currency
       );
     });
+    console.log('end spinner');
 
     createAccountCard(
       TOKEN,
@@ -195,8 +203,11 @@ function renderWindowAccounts(TOKEN, main, nav, accounts, atms, currency) {
   });
 
   createAccount.addEventListener('click', () => {
+    console.log('spinner');
+
     createAccountApi('http://localhost:3000/create-account', TOKEN).then(
       (result) => {
+        console.log('end spinner');
         createAccountCard(
           TOKEN,
           cardContainer,
@@ -223,6 +234,8 @@ function transitionToAccounts(
 ) {
   const btnOpenAccount = document.getElementById(`${result.account}`);
   btnOpenAccount.addEventListener('click', () => {
+    console.log('spinner');
+    reloadWindow(main, nav, accounts, atms, currency);
     renderViewingAccount(TOKEN, result, main, nav, accounts, atms, currency);
   });
 }
@@ -297,22 +310,16 @@ function renderViewingAccount(
 ) {
   getData(`http://localhost:3000/account/${result.account}`, TOKEN).then(
     (result) => {
-      reloadWindow(main, nav, accounts, atms, currency);
       main.append(
         mainViewingAccount(result.account, formatSumm(result.balance))
       );
 
-      // let a = [];
-      // for (let i = dsfg(result).magorKey.length - 1; i >= 0; i--) {
-      //   if (i)
-      // }
-      // console.log(dsfg(result).magorKey);
-
       myChart(
         'dinamicViewing',
-        filtr6(dsfg(result).magorKey),
-        filtr6(dsfg(result).magorValue)
+        sortTransaction(result, createArrMonths(6)).magorKey,
+        sortTransaction(result, createArrMonths(6)).magorValue
       );
+      console.log('end spinner');
 
       const balanceAmount = document.querySelector('.balance-amount');
 
@@ -347,28 +354,32 @@ function renderViewingAccount(
       const newTransitionForm = document.getElementById('newTransitionForm');
       const btnMail = newTransitionForm.querySelector('button');
 
-      newTransitionForm[0].addEventListener('blur', () => {
+      newTransitionForm[0].addEventListener('focus', () => {
         newTransitionForm[0].classList.remove('error');
       });
 
-      newTransitionForm[1].addEventListener('blur', () => {
+      newTransitionForm[1].addEventListener('focus', () => {
         newTransitionForm[1].classList.remove('error');
       });
 
       btnMail.addEventListener('click', (e) => {
         e.preventDefault();
-        const amount = newTransitionForm[1].value;
         const to = newTransitionForm[0].value;
+        const amount = newTransitionForm[1].value;
         newTransitionForm[0].classList.remove('error');
         newTransitionForm[1].classList.remove('error');
+        let accountsStorage = [];
 
         if (to.length < 16) {
           newTransitionForm[0].classList.add('error');
         }
-        if (amount > 0) {
+        if (amount <= 0) {
+          newTransitionForm[1].classList.add('error');
+        }
+        if (!newTransitionForm.querySelector('.error')) {
           const transitilnData = {
             from: result.account,
-            to: newTransitionForm[0].value,
+            to: accountsStorage,
             amount: amount,
           };
 
@@ -379,7 +390,7 @@ function renderViewingAccount(
           ).then((result) => {
             if (result.error === 'Invalid account to') {
               newTransitionForm[0].classList.add('error');
-              // alert('Не указан счёт зачисления, или этого счёта не существует');
+              alert('Не указан счёт зачисления, или этого счёта не существует');
             }
           });
           getData(
@@ -421,14 +432,14 @@ function renderViewingAccount(
               }
             );
           });
-        } else {
-          newTransitionForm[1].classList.add('error');
-          // alert('Не указана сумма перевода, или она отрицательная');
+          newTransitionForm[0].value = '';
+          newTransitionForm[1].value = '';
         }
       });
 
       const btnBack = document.getElementById('back');
       btnBack.addEventListener('click', () => {
+        console.log('spinner');
         renderWindowAccounts(TOKEN, main, nav, accounts, atms, currency);
       });
     }
@@ -449,13 +460,13 @@ function renderHistoryBalance(
 
   myChart(
     'dinamicHistory',
-    filtr12(dsfg(result).magorKey),
-    filtr12(dsfg(result).magorValue)
+    sortTransaction(result, createArrMonths(12)).magorKey,
+    sortTransaction(result, createArrMonths(12)).magorValue
   );
   myChart(
     'diferentHistory',
-    filtr12(dsfg(result).minorKey),
-    filtr12(dsfg(result).minorValue)
+    sortTransaction(result, createArrMonths(12)).minorKey,
+    sortTransaction(result, createArrMonths(12)).minorValue
   );
   const transactionTable = document.getElementById('transactionTable');
   renderTransactionTable(transactionTable, result, 25);
@@ -467,7 +478,6 @@ function renderHistoryBalance(
 }
 
 function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
-  reloadWindow(main, nav, accounts, atms, currency);
   currency.classList.add('open');
   main.append(mainCurrencyConversions());
 
@@ -536,6 +546,7 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
     // console.log(result);
     // console.log(Object.keys(result));
     // console.log(Object.values(result));
+    console.log('end spinner');
 
     for (let item of Object.values(result)) {
       const code = item.code;
@@ -600,80 +611,10 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
   };
 }
 
-function renderAtmcMap(TOKEN, main, nav, accounts, atms, currency) {
-  reloadWindow(main, nav, accounts, atms, currency);
+function renderAtmcMap(TOKEN, main, atms) {
   atms.classList.add('open');
   main.append(mainAtmcMap());
   getData(`http://localhost:3000/banks`, TOKEN).then((result) => {
     yandexMap(result);
   });
-}
-
-function filtr12(arr) {
-  const reverse = [];
-  const arrRev = arr.reverse();
-  for (let i = 0; i < arrRev.length; i++) {
-    if (i < 12) {
-      reverse.push(arrRev[i]);
-    } else break;
-  }
-  return reverse.reverse();
-}
-
-function filtr6(arr) {
-  const reverse = [];
-  const arrRev = arr.reverse();
-  for (let i = 0; i < arrRev.length; i++) {
-    if (i < 6) {
-      reverse.push(arrRev[i]);
-    } else break;
-  }
-  return reverse.reverse();
-}
-
-function dsfg(result) {
-  let arrMagor = new Map();
-  let arrMinor = new Map();
-  let magorKey = [];
-  let magorValue = [];
-  let minorKey = [];
-  let minorValue = [];
-  let date;
-
-  for (let transaction of result.transactions) {
-    if (date !== transaction.date.slice(0, 7)) {
-      if (date) {
-        magorKey.push(date);
-        magorValue.push(arrSumm(arrMagor.get(date)));
-        minorKey.push(date);
-        minorValue.push(arrSumm(arrMinor.get(date)));
-      }
-      date = transaction.date.slice(0, 7);
-      arrMagor.set(date, []);
-      arrMinor.set(date, []);
-    }
-    if (transaction.to === result.account) {
-      arrMagor.get(date).push(transaction.amount);
-    } else arrMinor.get(date).push(transaction.amount);
-  }
-
-  if (date) {
-    magorKey.push(date);
-    magorValue.push(arrSumm(arrMagor.get(date)));
-    minorKey.push(date);
-    minorValue.push(arrSumm(arrMinor.get(date)));
-  }
-  return {
-    magorKey,
-    magorValue,
-    minorKey,
-    minorValue,
-  };
-}
-
-function monthWithZerro() {
-  const month = new Date().getMonth() + 1;
-  if (String(month).length !== 2) {
-    return '0' + month;
-  } else return month;
 }
