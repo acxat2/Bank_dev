@@ -151,53 +151,104 @@ function arrSumm(arr) {
 }
 
 function sortTransaction(result, arrMonths) {
-  let arrMagor = new Map();
-  let arrMinor = new Map();
+  let arrMagor = new Map(); //массив поступлений
+  let arrMinor = new Map(); //массив переводов
   let magorKey = [];
   let magorValue = [];
   let minorKey = [];
   let minorValue = [];
+
   let i = 0;
   let date = arrMonths[i];
+  const transactionLength = result.transactions.length;
 
-  arrMagor.set(date, []);
-  arrMinor.set(date, []);
-  magorKey.push(date);
-  minorKey.push(date);
+  if (result.transactions.length) {
+    const firstTransactionDate = result.transactions[0].date.slice(0, 7);
+    const lastTransactionDate = result.transactions[
+      transactionLength - 1
+    ].date.slice(0, 7);
 
-  for (let transaction of result.transactions) {
-    back: if (transaction.date.slice(0, 7) >= date) {
-      if (transaction.date.slice(0, 7) === arrMonths[i + 1]) {
-        magorValue.push(arrSumm(arrMagor.get(date)));
-        minorValue.push(arrSumm(arrMinor.get(date)));
-        i++;
-        date = arrMonths[i];
-        arrMagor.set(date, []);
-        arrMinor.set(date, []);
-        magorKey.push(date);
-        minorKey.push(date);
-      } else {
-        if (transaction.date.slice(0, 7) > arrMonths[i + 1]) {
+    if (firstTransactionDate > date) {
+      for (let month of arrMonths) {
+        if (firstTransactionDate >= month) {
+          i++;
+          date = month;
+        }
+      }
+    }
+    arrMagor.set(date, []);
+    arrMinor.set(date, []);
+    magorKey.push(date);
+    minorKey.push(date);
+
+    // console.log(result);
+    // console.log(date);
+    // console.log(arrMonths);
+    // console.log(arrMonths[0]);
+    for (let transaction of result.transactions) {
+      const transactionDate = transaction.date.slice(0, 7);
+      back: if (transactionDate >= arrMonths[0]) {
+        if (transactionDate === arrMonths[i]) {
+          console.log(`${transactionDate} === ${arrMonths[i]}`);
           magorValue.push(arrSumm(arrMagor.get(date)));
           minorValue.push(arrSumm(arrMinor.get(date)));
-          i++;
           date = arrMonths[i];
+          i++;
+          arrMagor.set(date, []);
+          arrMinor.set(date, []);
+          magorKey.push(date);
+          minorKey.push(date);
+          // } else {
+        }
+        if (transactionDate > arrMonths[i]) {
+          console.log(`${transactionDate} > ${arrMonths[i]}`);
+          magorValue.push(arrSumm(arrMagor.get(date)));
+          minorValue.push(arrSumm(arrMinor.get(date)));
+          date = arrMonths[i];
+          i++;
           arrMagor.set(date, []);
           arrMinor.set(date, []);
           magorKey.push(date);
           minorKey.push(date);
           break back;
         }
+        // }
+        if (transaction.to === result.account) {
+          arrMagor.get(date).push(transaction.amount);
+        } else arrMinor.get(date).push(transaction.amount);
       }
-      if (transaction.to === result.account) {
-        arrMagor.get(date).push(transaction.amount);
-      } else arrMinor.get(date).push(transaction.amount);
+      if (
+        result.transactions[transactionLength - 1].date === transaction.date
+      ) {
+        magorValue.push(arrSumm(arrMagor.get(date)));
+        minorValue.push(arrSumm(arrMinor.get(date)));
+      }
     }
+
+    if (lastTransactionDate < arrMonths[arrMonths.length - 1]) {
+      for (
+        let j = arrMonths.indexOf(lastTransactionDate);
+        j < arrMonths.length - 1;
+        j++
+      ) {
+        date = arrMonths[i];
+        magorKey.push(date);
+        minorKey.push(date);
+        magorValue.push(0);
+        minorValue.push(0);
+        i++;
+      }
+    }
+  } else {
+    magorKey.push(arrMonths[arrMonths.length - 1]);
+    minorKey.push(arrMonths[arrMonths.length - 1]);
+    magorValue.push(0);
+    minorValue.push(0);
   }
-  if (date) {
-    magorValue.push(arrSumm(arrMagor.get(date)));
-    minorValue.push(arrSumm(arrMinor.get(date)));
-  }
+  // console.log(magorValue);
+  // console.log(minorKey);
+  // console.log(minorValue);
+
   return {
     magorKey,
     magorValue,
@@ -224,7 +275,6 @@ function createArrMonths(n) {
       }
     }
   }
-
   return arrDate.reverse();
 }
 

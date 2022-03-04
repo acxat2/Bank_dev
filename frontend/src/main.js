@@ -94,14 +94,7 @@ function enter() {
           currency.addEventListener('click', () => {
             console.log('spinner');
             reloadWindow(main, nav, accounts, atms, currency);
-            renderCurrencyConversions(
-              TOKEN,
-              main,
-              nav,
-              accounts,
-              atms,
-              currency
-            );
+            renderCurrencyConversions(TOKEN, main, currency);
           });
 
           atms.addEventListener('click', () => {
@@ -276,26 +269,26 @@ function createAccountCard(
   }
 }
 
-function renderTransactionTable(transactionTable, result, n) {
-  if (result.transactions.length > 0) {
-    if (n > result.transactions.length) {
-      n = result.transactions.length;
-    }
-    for (let i = 1; i <= n; i++) {
-      const transaction = result.transactions[result.transactions.length - i];
-      transactionTable.append(
-        createLineTable(
-          transaction.from,
-          transaction.to,
-          formatSummColor(formatSumm(definSign(transaction, result.account))),
-          dateTransformForTable(transaction.date)
-        )
-      );
-      const amount = transactionTable.children[i - 1].children[2];
-      if (amount.textContent.includes('+')) {
-        amount.classList.add('positive');
-      } else amount.classList.add('negative');
-    }
+function transactionsTable(
+  transactionTable,
+  resultTransactionsLength,
+  result,
+  n
+) {
+  for (let i = 1; i <= n; i++) {
+    const transaction = result.transactions[resultTransactionsLength - i];
+    transactionTable.append(
+      createLineTable(
+        transaction.from,
+        transaction.to,
+        formatSummColor(formatSumm(definSign(transaction, result.account))),
+        dateTransformForTable(transaction.date)
+      )
+    );
+    const amount = transactionTable.children[i - 1].children[2];
+    if (amount.textContent.includes('+')) {
+      amount.classList.add('positive');
+    } else amount.classList.add('negative');
   }
 }
 
@@ -313,7 +306,6 @@ function renderViewingAccount(
       main.append(
         mainViewingAccount(result.account, formatSumm(result.balance))
       );
-
       myChart(
         'dinamicViewing',
         sortTransaction(result, createArrMonths(6)).magorKey,
@@ -376,7 +368,10 @@ function renderViewingAccount(
         if (amount <= 0) {
           newTransitionForm[1].classList.add('error');
         }
-        console.log(newTransitionForm.querySelector('.error'));
+        if (amount > result.balance) {
+          newTransitionForm[1].classList.add('error');
+          alert('На карте нет такой суммы');
+        }
 
         if (!newTransitionForm.querySelector('.error')) {
           const transitilnData = {
@@ -401,10 +396,7 @@ function renderViewingAccount(
             `http://localhost:3000/account/${result.account}`,
             TOKEN
           ).then((result) => {
-            const trs = transactionTable.querySelectorAll('tr');
-            for (let tr of trs) {
-              tr.remove();
-            }
+            deleteTrs(transactionTable);
             renderTransactionTable(transactionTable, result, 10);
             balanceAmount.textContent = formatSumm(result.balance);
             balanceDinamic.addEventListener('click', () => {
@@ -471,7 +463,7 @@ function renderHistoryBalance(
     sortTransaction(result, createArrMonths(12)).minorValue
   );
   const transactionTable = document.getElementById('transactionTable');
-  renderTransactionTable(transactionTable, result, 25);
+  renderTransactionTable25(transactionTable, result, 25);
   const btnBack = document.getElementById('back');
   btnBack.addEventListener('click', () => {
     reloadWindow(main, nav, accounts, atms, currency);
@@ -479,7 +471,7 @@ function renderHistoryBalance(
   });
 }
 
-function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
+function renderCurrencyConversions(TOKEN, main, currency) {
   currency.classList.add('open');
   main.append(mainCurrencyConversions());
 
@@ -489,8 +481,8 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
   const changeFrom = document.getElementById('selectCurrencyFrom');
   const changeTo = document.getElementById('selectCurrencyTo');
   const changeAmount = document.getElementById('inputCurrencyAmount');
-  const form = document.getElementById('currencyChangeForm');
-  const btnChange = form.querySelector('button');
+  const FORM = document.getElementById('currencyChangeForm');
+  const btnChange = FORM.querySelector('button');
 
   getData(`http://localhost:3000/all-currencies`, TOKEN).then((result) => {
     for (let value of result) {
@@ -516,14 +508,7 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
       if (amount <= 0) {
         changeAmount.classList.add('error');
       }
-      console.log(amount === '1');
-      console.log(amount); //
-      console.log(form.querySelector('.error'));
-      if (!form.querySelector('.error')) {
-        // Почему здесь условие не срабатывает?
-        from = '';
-        to = '';
-        amount = '';
+      if (!FORM.querySelector('.error')) {
         changeFrom.classList.remove('error');
         changeTo.classList.remove('error');
         changeAmount.classList.remove('error');
@@ -539,20 +524,31 @@ function renderCurrencyConversions(TOKEN, main, nav, accounts, atms, currency) {
           TOKEN,
           transitilnData
         ).then((result) => {
-          const list = document.querySelector('.your-currency-list');
-          const trTo = list.querySelectorAll('.currency-online-tr');
+          console.log(result);
+          if (result.payload) {
+            const list = document.querySelector('.your-currency-list');
+            const trTo = list.querySelectorAll('.currency-online-tr');
 
-          for (let tr of trTo) {
-            if (tr.firstChild.textContent === from) {
-              tr.lastChild.innerHTML = formatAmouth(
-                result.payload[from].amount
-              );
+            for (let tr of trTo) {
+              if (tr.firstChild.textContent === from) {
+                tr.lastChild.innerHTML = formatAmouth(
+                  result.payload[from].amount
+                );
+              }
+              if (tr.firstChild.textContent === to) {
+                tr.lastChild.innerHTML = formatAmouth(
+                  result.payload[to].amount
+                );
+              }
             }
-            if (tr.firstChild.textContent === to) {
-              tr.lastChild.innerHTML = formatAmouth(result.payload[to].amount);
-            }
+          } else {
+            changeAmount.classList.add('error');
+            alert('Недостаточно средств данной валюты');
           }
         });
+        changeFrom.value = '';
+        changeTo.value = '';
+        changeAmount.value = '';
       }
     });
   });
@@ -632,4 +628,87 @@ function renderAtmcMap(TOKEN, main, atms) {
   getData(`http://localhost:3000/banks`, TOKEN).then((result) => {
     yandexMap(result);
   });
+}
+
+function deleteTrs(transactionTable) {
+  const trs = transactionTable.querySelectorAll('tr');
+  for (let tr of trs) {
+    tr.remove();
+  }
+}
+
+function renderTransactionTable(transactionTable, result, n) {
+  if (result.transactions.length > 0) {
+    if (n > result.transactions.length) {
+      n = result.transactions.length;
+    }
+    for (let i = 1; i <= n; i++) {
+      const transaction = result.transactions[result.transactions.length - i];
+      transactionTable.append(
+        createLineTable(
+          transaction.from,
+          transaction.to,
+          formatSummColor(formatSumm(definSign(transaction, result.account))),
+          dateTransformForTable(transaction.date)
+        )
+      );
+      const amount = transactionTable.children[i - 1].children[2];
+      if (amount.textContent.includes('+')) {
+        amount.classList.add('positive');
+      } else amount.classList.add('negative');
+    }
+  }
+}
+
+function renderTransactionTable25(transactionTable, result, n) {
+  let resultTransactionsLength = result.transactions.length;
+  if (resultTransactionsLength > 0) {
+    let m = n;
+    if (n >= resultTransactionsLength) {
+      n = resultTransactionsLength;
+    }
+    // console.
+    if (resultTransactionsLength > n) {
+      transactionTable.addEventListener('mousedown', (e) => {
+        if (e.which == 4) {
+          if (resultTransactionsLength - m > 0) {
+            resultTransactionsLength = resultTransactionsLength - m;
+
+            if (m >= resultTransactionsLength) {
+              m = resultTransactionsLength;
+            }
+
+            deleteTrs(transactionTable);
+            transactionsTable(
+              transactionTable,
+              resultTransactionsLength,
+              result,
+              m
+            );
+            m = n;
+          }
+        }
+        // } else {
+        if (e.which == 5) {
+          if (resultTransactionsLength + m <= result.transactions.length) {
+            resultTransactionsLength = resultTransactionsLength + m;
+
+            if (m >= resultTransactionsLength) {
+              m = resultTransactionsLength;
+            }
+
+            deleteTrs(transactionTable);
+            transactionsTable(
+              transactionTable,
+              resultTransactionsLength,
+              result,
+              m
+            );
+            m = n;
+          }
+        }
+      });
+    }
+    transactionsTable(transactionTable, resultTransactionsLength, result, n);
+  }
 }
