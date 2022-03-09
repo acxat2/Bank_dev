@@ -103,7 +103,6 @@ function mainViewingAccount(account, balance) {
                 height: '195px',
               })
             ),
-            // ),
           ]
         ),
       ]),

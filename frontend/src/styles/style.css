@@ -741,7 +741,7 @@ td:first-child {
 .atms-map-window__container {
   width: 100%;
   height: 728px;
-  /* background-color: palegoldenrod; */
+  background-color: palegoldenrod;
 }
 
 .chart-container {

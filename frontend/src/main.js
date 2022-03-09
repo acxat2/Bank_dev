@@ -308,8 +308,8 @@ function renderViewingAccount(
       );
       myChart(
         'dinamicViewing',
-        sortTransaction(result, createArrMonths(6)).magorKey,
-        sortTransaction(result, createArrMonths(6)).magorValue
+        sortTransaction(result, 6, createArrMonths(6)).magorKey,
+        sortTransaction(result, 6, createArrMonths(6)).magorValue
       );
       console.log('end spinner');
 
@@ -454,13 +454,13 @@ function renderHistoryBalance(
 
   myChart(
     'dinamicHistory',
-    sortTransaction(result, createArrMonths(12)).magorKey,
-    sortTransaction(result, createArrMonths(12)).magorValue
+    sortTransaction(result, 12, createArrMonths(12)).magorKey,
+    sortTransaction(result, 12, createArrMonths(12)).magorValue
   );
   myChart(
     'diferentHistory',
-    sortTransaction(result, createArrMonths(12)).minorKey,
-    sortTransaction(result, createArrMonths(12)).minorValue
+    sortTransaction(result, 12, createArrMonths(12)).minorKey,
+    sortTransaction(result, 12, createArrMonths(12)).minorValue
   );
   const transactionTable = document.getElementById('transactionTable');
   renderTransactionTable25(transactionTable, result, 25);

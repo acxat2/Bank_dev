@@ -68,7 +68,7 @@ function formatAmouth(str) {
 
 function formatSummColor(str) {
   if (str.includes('-')) {
-    return `${str}`;
+    return `${str.replace('-', '- ')}`;
   } else {
     return `+ ${str}`;
   }
@@ -144,13 +144,13 @@ function definSign(transaction, account) {
 
 function arrSumm(arr) {
   let summ = 0;
-  for (let magor of arr) {
-    summ = summ + magor;
+  for (let summand of arr) {
+    summ = summ + summand;
   }
   return summ;
 }
 
-function sortTransaction(result, arrMonths) {
+function sortTransaction(result, n, arrMonths) {
   let arrMagor = new Map(); //массив поступлений
   let arrMinor = new Map(); //массив переводов
   let magorKey = [];
@@ -181,15 +181,10 @@ function sortTransaction(result, arrMonths) {
     magorKey.push(date);
     minorKey.push(date);
 
-    // console.log(result);
-    // console.log(date);
-    // console.log(arrMonths);
-    // console.log(arrMonths[0]);
     for (let transaction of result.transactions) {
       const transactionDate = transaction.date.slice(0, 7);
       back: if (transactionDate >= arrMonths[0]) {
         if (transactionDate === arrMonths[i]) {
-          console.log(`${transactionDate} === ${arrMonths[i]}`);
           magorValue.push(arrSumm(arrMagor.get(date)));
           minorValue.push(arrSumm(arrMinor.get(date)));
           date = arrMonths[i];
@@ -198,10 +193,8 @@ function sortTransaction(result, arrMonths) {
           arrMinor.set(date, []);
           magorKey.push(date);
           minorKey.push(date);
-          // } else {
         }
         if (transactionDate > arrMonths[i]) {
-          console.log(`${transactionDate} > ${arrMonths[i]}`);
           magorValue.push(arrSumm(arrMagor.get(date)));
           minorValue.push(arrSumm(arrMinor.get(date)));
           date = arrMonths[i];
@@ -212,7 +205,6 @@ function sortTransaction(result, arrMonths) {
           minorKey.push(date);
           break back;
         }
-        // }
         if (transaction.to === result.account) {
           arrMagor.get(date).push(transaction.amount);
         } else arrMinor.get(date).push(transaction.amount);
@@ -245,9 +237,13 @@ function sortTransaction(result, arrMonths) {
     magorValue.push(0);
     minorValue.push(0);
   }
-  // console.log(magorValue);
-  // console.log(minorKey);
-  // console.log(minorValue);
+
+  if (magorKey.length > n) {
+    magorKey.shift(0);
+    magorValue.shift(0);
+    minorKey.shift(0);
+    minorValue.shift(0);
+  }
 
   return {
     magorKey,
@@ -285,7 +281,6 @@ export {
   formatSummColor,
   definSign,
   formatAmouth,
-  arrSumm,
   sortTransaction,
   createArrMonths,
 };
