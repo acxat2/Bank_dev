@@ -19,8 +19,18 @@ Coin - банковская система хранения и операций 
 Для установки зависимостей из файла package.json войдите в папку "frontend" и введите в командной строке "npm install".
 
 Для dev-режима введите в командной строке "npm run dev"
-Приложение будет доступно по адресу: http://localhost:8080/
+По умолчанию dev-сервер слушает на 8080-ом порту localhost
 
 Для сботки приложения запустите в командной строке команду "npm run build".
 Собраный проект запишется в папку "dist".
 
+## Rest Api
+Для запуска сервера воспользуйтесь инструкцией из файла REDME.md в папке rest-api-server
+
+## Demo
+
+<img src="/img_demo/enter.jpg">
+<img src="/img_demo/Checks.jpg">
+<img src="/img_demo/valuts.jpg">
+<img src="/img_demo/viewing.jpg">
+<img src="/img_demo/map.jpg">
